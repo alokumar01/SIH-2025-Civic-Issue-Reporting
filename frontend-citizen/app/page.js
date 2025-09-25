@@ -8,7 +8,7 @@ import { NavbarDemo } from "@/components/Navbar";
 
 export default function HomePage() {
     return (
-        <div className="min-h-screen bg-background">
+        <div className="min-h-screen bg-background pt-10">
             {/* Header */}
             {/* <header className="border-b bg-card">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8">

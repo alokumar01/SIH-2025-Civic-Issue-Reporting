@@ -1,7 +1,7 @@
 export default function HeroSection() {
   return (
     <div className="w-full md:w-1/2 flex flex-col justify-center items-center text-center p-6 md:p-12 text-primary-foreground">
-      <div className="max-w-md">
+      <div className="max-w-md text-white">
         <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-3 drop-shadow">
           Sayogi
         </h1>

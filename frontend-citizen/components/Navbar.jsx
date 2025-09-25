@@ -12,6 +12,16 @@ import {
 } from "@/components/ui/resizable-navbar";
 import { useState } from "react";
 import { ModeToggle } from "./ModeToggle";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { useUserStore } from "@/store/userStore";
 
 export function NavbarDemo() {
   const navItems = [
@@ -40,9 +50,11 @@ export function NavbarDemo() {
           <NavItems items={navItems} />
           <div className="flex items-center gap-4">
             <NavbarButton variant="secondary">
-                <ModeToggle/>
+              <ModeToggle />
             </NavbarButton>
-            <NavbarButton variant="primary">Logout</NavbarButton>
+
+            {/* Auth area: shows Login when not authenticated, Avatar+dropdown when authenticated */}
+            <AuthArea />
           </div>
         </NavBody>
 
@@ -53,8 +65,8 @@ export function NavbarDemo() {
             <div className="flex items-center gap-4">
             <ModeToggle/>
             <MobileNavToggle
-            isOpen={isMobileMenuOpen}
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} />
+              isOpen={isMobileMenuOpen}
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} />
 
             </div>
           </MobileNavHeader>
@@ -70,17 +82,99 @@ export function NavbarDemo() {
               </a>
             ))}
             <div className="flex w-full flex-col gap-4">
-              <NavbarButton
-                onClick={() => setIsMobileMenuOpen(false)}
-                variant="primary"
-                className="w-full">
-                Login
-              </NavbarButton>
+              {/* Mobile auth actions */}
+              <MobileAuthActions onClose={() => setIsMobileMenuOpen(false)} />
             </div>
           </MobileNavMenu>
         </MobileNav>
       </Navbar>
       {/* Navbar */}
     </div>
+  );
+}
+
+function AuthArea() {
+  const user = useUserStore((s) => s.user);
+  const isAuthenticated = useUserStore((s) => s.isAuthenticated);
+  const logout = useUserStore((s) => s.logout);
+
+  if (!isAuthenticated) {
+    return (
+      <NavbarButton variant="primary" as="a" href="/auth">
+        Login
+      </NavbarButton>
+    );
+  }
+
+  return (
+    <div className="relative">
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <button className="rounded-full focus:outline-none">
+            <Avatar className="size-9">
+              {user?.avatar ? (
+                <AvatarImage src={user.avatar} alt={user.firstName} />
+              ) : (
+                <AvatarFallback>{(user?.firstName || "?")[0]}</AvatarFallback>
+              )}
+            </Avatar>
+          </button>
+        </DropdownMenuTrigger>
+
+        <DropdownMenuContent align="end" className="w-44">
+          <div className="px-2 py-1 text-sm">
+            <div className="font-medium">{user?.firstName} {user?.lastName}</div>
+            <div className="text-xs text-muted-foreground">{user?.email}</div>
+          </div>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem asChild>
+            <a href="/profile">Profile</a>
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => logout()} className="text-destructive">
+            Logout
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
+  );
+}
+
+function MobileAuthActions({ onClose }) {
+  const user = useUserStore((s) => s.user);
+  const isAuthenticated = useUserStore((s) => s.isAuthenticated);
+  const logout = useUserStore((s) => s.logout);
+
+  if (!isAuthenticated) {
+    return (
+      <NavbarButton
+        onClick={() => onClose()}
+        variant="primary"
+        className="w-full"
+        as="a"
+        href="/auth/page">
+        Login
+      </NavbarButton>
+    );
+  }
+
+  return (
+    <>
+      <div className="flex items-center gap-3 px-2">
+        <Avatar className="size-10">
+          {user?.avatar ? (
+            <AvatarImage src={user.avatar} alt={user.firstName} />
+          ) : (
+            <AvatarFallback>{(user?.firstName || "?")[0]}</AvatarFallback>
+          )}
+        </Avatar>
+        <div>
+          <div className="font-medium">{user?.firstName} {user?.lastName}</div>
+          <div className="text-sm text-muted-foreground">{user?.email}</div>
+        </div>
+      </div>
+      <div className="px-2 w-full">
+        <NavbarButton onClick={() => { logout(); onClose(); }} variant="primary" className="w-full">Logout</NavbarButton>
+      </div>
+    </>
   );
 }
