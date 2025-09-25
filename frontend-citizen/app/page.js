@@ -4,12 +4,13 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
+import { NavbarDemo } from "@/components/Navbar";
 
 export default function HomePage() {
     return (
         <div className="min-h-screen bg-background">
             {/* Header */}
-            <header className="border-b bg-card">
+            {/* <header className="border-b bg-card">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex items-center justify-between h-16">
                         <div className="flex items-center space-x-4">
@@ -35,7 +36,7 @@ export default function HomePage() {
                         </nav>
                     </div>
                 </div>
-            </header>
+            </header> */}
 
             {/* Main Content */}
             <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -64,7 +65,7 @@ export default function HomePage() {
                             </div>
                             <CardTitle className="text-2xl">Raise a Complaint</CardTitle>
                             <CardDescription className="text-base">
-                                Report new civic issues in your area such as road damage, water supply problems, or public facility concerns.
+                                Report new civic issues in your area such as road damage, water supply problems, or public concerns.
                             </CardDescription>
                         </CardHeader>
                         <CardFooter>
