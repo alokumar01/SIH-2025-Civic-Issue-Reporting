@@ -27,15 +27,9 @@ export default function LoginForm() {
     e.preventDefault()
     setIsSubmitting(true)
 
-    try {
-      const success = await login(form)
-      if (success) {
-        router.push("/dashboard")
-      }
-    } catch (err) {
-      console.error("Login error:", err)
-    } finally {
-      setIsSubmitting(false)
+    const success = await login(form);
+    if (success) {
+      router.push("/dashboard");
     }
   }
 

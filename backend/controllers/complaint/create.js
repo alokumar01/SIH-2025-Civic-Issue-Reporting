@@ -1,7 +1,7 @@
-import Complaint from '../models/complaint.js';
-import cloudinary from '../config/cloudinary.js';
-import ApiError from '../utils/ApiError.js';
-import logger from '../config/logger.js';
+import Complaint from '../../models/complaint.js';
+import cloudinary from '../../config/cloudinary.js';
+import ApiError from '../../utils/ApiError.js';
+import logger from '../../config/logger.js';
 
 // Helper to upload a single file buffer to Cloudinary using upload_stream with compression
 const uploadToCloudinary = (file, folder, resourceType = 'auto') => {

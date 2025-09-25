@@ -14,7 +14,7 @@ const transporter = nodemailer.createTransport({
 // Send verification email
 export const sendVerificationEmail = async (email, name, token) => {
     const verificationUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/verify-email/${token}`;
-    
+
     await transporter.sendMail({
         from: process.env.SMTP_EMAIL,
         to: email,
@@ -42,3 +42,12 @@ export const sendWelcomeEmail = async (email, name) => {
         text: `Hello ${name}!\n\nWelcome to Civic Reporting System!\n\nYour account is now active.\n\nThanks!`
     });
 };
+
+export const sendEmail = async ({ email, subject, message }) => {
+    await transporter.sendMail({
+        from: process.env.SMTP_EMAIL,
+        to: email,
+        subject,
+        text: message
+    });
+}
