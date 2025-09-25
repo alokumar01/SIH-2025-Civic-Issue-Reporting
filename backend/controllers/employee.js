@@ -206,10 +206,29 @@ const getAllEmployees = async (req, res, next) => {
         const limit = parseInt(req.query.limit, 10) || 25;
         const startIndex = (page - 1) * limit;
 
-        // Build filter object for employees only
+        // Build base filter for employees only
         const filter = {
             role: { $in: ['staff', 'department_head', 'admin', 'municipal_admin'] }
         };
+
+        // Role-based access control
+        if (req.user.role === 'admin') {
+            // admin: no additional filter
+        } else if (req.user.role === 'department_head') {
+            // Only employees in their department
+            if (!req.user.department) {
+                return next(new ApiError(403, 'No department assigned', 'NO_DEPARTMENT', 'Department head does not have a department assigned'));
+            }
+            filter.department = req.user.department;
+        } else if (req.user.role === 'municipal_admin') {
+            // Only employees whose address.pincode is in adminArea
+            if (!req.user.adminArea || !Array.isArray(req.user.adminArea) || req.user.adminArea.length === 0) {
+                return next(new ApiError(403, 'No admin area assigned', 'NO_ADMIN_AREA', 'Municipal admin does not have an admin area assigned'));
+            }
+            filter['address.pincode'] = { $in: req.user.adminArea };
+        } else {
+            return next(new ApiError(403, 'Access denied', 'ACCESS_DENIED', 'You do not have permission to view employees'));
+        }
 
         // Additional filters
         if (req.query.role) filter.role = req.query.role;
