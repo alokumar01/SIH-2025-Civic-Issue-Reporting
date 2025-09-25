@@ -10,7 +10,7 @@ import errorHandler from "./middleware/error.js";
 import { closeDB, connectDB } from "./config/db.js";
 
 // Import routes
-import authRoutes from './routes/auth.js';
+import v1Route from './routes/index.js';
 
 dotenv.config();
 
@@ -87,7 +87,7 @@ app.get("/health", (req, res) => {
 });
 
 // API routes
-app.use("/auth", authRoutes);
+app.use("/v1", v1Route)
 
 // 404 handler - catch all unmatched routes
 app.use((req, res, next) => {

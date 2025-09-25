@@ -22,15 +22,22 @@ const DepartmentSchema = new mongoose.Schema({
         type: String,
         required: true,
         unique: true,
-        uppercase: true,
         trim: true,
-        match: [/^[A-Z]{2,6}$/, 'Department code must be 2-6 uppercase letters']
+        maxlength: [10, 'Department code cannot exceed 10 characters'],
+        minlength: [1, 'Department code must be at least 1 character']
     },
 
     // Categories handled (mapped with Complaint.category)
     categories: [{
         type: String,
         require: true
+    }],
+
+    // Service area - pin codes where this department operates
+    serviceArea: [{
+        type: String,
+        match: [/^[0-9]{6}$/, 'Please enter a valid 6-digit pincode'],
+        trim: true
     }],
 
     // Department Head
@@ -88,11 +95,12 @@ const DepartmentSchema = new mongoose.Schema({
             email: String
         }
     }],
-}, {timestamps: true});
+}, { timestamps: true });
 
 // Index for faster lookups
 DepartmentSchema.index({ name: 1 });
 DepartmentSchema.index({ categories: 1 });
+DepartmentSchema.index({ serviceArea: 1 });
 
 export default mongoose.models.Department ||
     mongoose.model("Department", DepartmentSchema);
