@@ -119,7 +119,7 @@ export const authRateLimit = (windowMs = 15 * 60 * 1000, max = 5) => {
     return (req, res, next) => {
         const key = req.ip + ':' + (req.body.email || req.body.phone || 'unknown');
         const now = Date.now();
-        
+
         // Clean old entries
         for (const [k, v] of attempts.entries()) {
             if (now - v.resetTime > windowMs) {
@@ -145,10 +145,10 @@ export const authRateLimit = (windowMs = 15 * 60 * 1000, max = 5) => {
 export const adminOnly = authorize('admin');
 
 // Staff and above access  
-export const staffAndAbove = authorize('staff', 'department_head', 'admin');
+export const staffAndAbove = authorize('staff', 'department_head', 'admin', 'municipal_admin');
 
 // Department head and admin access
-export const departmentHeadAndAdmin = authorize('department_head', 'admin');
+export const departmentHeadAndAdmin = authorize('department_head', 'admin', 'municipal_admin');
 
 export default {
     protect,
