@@ -60,9 +60,26 @@ const ComplaintSchema = new mongoose.Schema({
                 type: Date,
                 default: Date.now
             }
+        }],
+        videos: [{
+            url: {
+                type: String,
+                validate: {
+                    validator: function (v) {
+                        return /^https?:\/\/.+\.(mp4|mov|avi|wmv|webm|mkv)$/i.test(v);
+                    },
+                    message: "Invalid video URL format",
+                }
+            },
+            caption: {
+                type: String,
+                maxlength: [200, "Caption cannot exceed 200 characters"]
+            },
+            uploadedAt: {
+                type: Date,
+                default: Date.now
+            }
         }]
-
-        //TODO: Add video support
     },
 
     // Location of the site of complaint
@@ -80,7 +97,7 @@ const ComplaintSchema = new mongoose.Schema({
             }
         },
     },
-    
+
     state: {
         type: String,
         required: true,

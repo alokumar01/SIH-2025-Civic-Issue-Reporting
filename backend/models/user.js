@@ -75,15 +75,12 @@ const userSchema = new mongoose.Schema({
         street: String,
         city: {
             type: String,
-            required: [true, 'City is required']
         },
         state: {
             type: String,
-            required: [true, 'State is required']
         },
         pincode: {
             type: String,
-            required: [true, 'Pincode is required'],
             match: [/^[0-9]{6}$/, 'Please enter a valid 6-digit pincode']
         },
         coordinates: {
