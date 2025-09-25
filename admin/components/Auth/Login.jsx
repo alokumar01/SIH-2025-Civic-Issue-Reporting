@@ -19,14 +19,7 @@ export default function LoginForm() {
 
     const success = await login(form);
     if (success) {
-      // Redirect based on role
-      if (hasRole(["admin"])) {
-        router.push("/dashboard");
-      } else if (hasRole(["staff"])) {
-        router.push("/staff/dashboard");
-      } else {
-        router.push("/dashboard");
-      }
+      router.push("/dashboard");
     }
   };
 

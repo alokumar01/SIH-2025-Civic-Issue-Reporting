@@ -1,7 +1,12 @@
 import express from 'express';
-import { fileComplaint } from '../controllers/complaint.js';
 import multer from 'multer';
 import { protect } from '../middleware/auth.js';
+import { fileComplaint } from '../controllers/complaint/create.js';
+import { 
+  assignStaffToComplaint,
+  getJurisdictionComplaints,
+  getAssignmentStats
+} from '../controllers/complaint/municipal_admin.js';
 
 // Use multer for file uploads (memory storage for direct upload to Cloudinary)
 const storage = multer.memoryStorage();
@@ -20,5 +25,10 @@ router.post(
   ]),
   fileComplaint
 );
+
+// Municipal Admin Routes
+router.post('/:complaintId/assign', protect, assignStaffToComplaint);
+router.get('/jurisdiction', protect, getJurisdictionComplaints);
+router.get('/stats', protect, getAssignmentStats);
 
 export default router;

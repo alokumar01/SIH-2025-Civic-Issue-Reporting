@@ -1,5 +1,5 @@
 "use client";
-import ProtectedRoute from "@/components/auth/ProtectRoutes";
+import ProtectedRoute from "@/components/Auth/ProtectRoutes";
 import { useUserStore } from "@/store/userStore";
 
 export default function AdminPage() {

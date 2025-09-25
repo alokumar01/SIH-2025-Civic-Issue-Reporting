@@ -27,10 +27,17 @@ const limiter = rateLimit({
 app.use(limiter);
 
 // CORS configuration
+const allowedOrigins = [
+    process.env.FRONTEND_URL, // from env (if defined)
+    "http://localhost:3000",
+    "http://localhost:3001"
+].filter(Boolean); // removes undefined/null
+
 app.use(cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:3000",
+    origin: allowedOrigins,
     credentials: true
 }));
+
 
 // Body parsing middleware
 app.use(express.json());
