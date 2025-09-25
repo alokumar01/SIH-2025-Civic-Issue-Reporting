@@ -2,8 +2,7 @@ import axios from 'axios';
 
 // Create axios instance
 const api = axios.create({
-    baseURL: process.env.SERVER_URL || 'http://localhost:5050',
-    timeout: 10000, // Optional: timeout for requests
+    baseURL: 'http://localhost:5050'
 });
 
 // Attach token automatically

@@ -9,6 +9,7 @@ import BasicInfo from "@/components/ComplaintForm/BasicInfo";
 import LocationForm from "@/components/ComplaintForm/LocationForm";
 import MediaUpload from "@/components/ComplaintForm/MediaUpload";
 import { useState } from "react";
+import api from "@/lib/api";
 
 export default function NewComplaintPage() {
     const [formData, setFormData] = useState({
@@ -68,16 +69,11 @@ export default function NewComplaintPage() {
                 formDataToSend.append("tags", JSON.stringify(formData.tags));
             }
 
-            const response = await fetch('/api/complaints', {
-                method: 'POST',
-                body: formDataToSend
-            });
+            console.log("Submitting form data:", formDataToSend);
+            const res = await api.post('/v1/complaints',formData);
 
-            if (!response.ok) {
-                throw new Error('Failed to submit complaint');
-            }
-
-            const result = await response.json();
+            const result = await res.data;
+            console.log(result);
             // TODO: Show success message and redirect
             console.log('Complaint submitted successfully:', result);
 

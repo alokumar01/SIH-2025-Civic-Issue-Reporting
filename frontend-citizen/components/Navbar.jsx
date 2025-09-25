@@ -151,7 +151,7 @@ function MobileAuthActions({ onClose }) {
         variant="primary"
         className="w-full"
         as="a"
-        href="/auth/page">
+        href="/auth">
         Login
       </NavbarButton>
     );
