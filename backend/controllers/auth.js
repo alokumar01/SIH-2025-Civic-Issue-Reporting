@@ -53,6 +53,7 @@ export const register = async (req, res, next) => {
             role,
             department,
             employeeId,
+            adminArea,
             address
         } = req.body;
 
@@ -98,6 +99,20 @@ export const register = async (req, res, next) => {
         if (role && ['staff', 'admin', 'department_head'].includes(role)) {
             if (department) userData.department = department;
             if (employeeId) userData.employeeId = employeeId;
+        }
+
+        // Add employeeId for municipal_admin and adminArea for municipal_admin
+        if (role === 'municipal_admin') {
+            if (employeeId) userData.employeeId = employeeId;
+            if (adminArea && Array.isArray(adminArea)) {
+                // Validate admin area pin codes
+                for (const pincode of adminArea) {
+                    if (!/^[0-9]{6}$/.test(pincode)) {
+                        return next(new ApiError(400, 'Invalid admin area pincode format', 'INVALID_ADMIN_AREA_PINCODE', 'All admin area pincodes must be 6 digits'));
+                    }
+                }
+                userData.adminArea = adminArea.map(pin => pin.trim());
+            }
         }
 
         const user = await User.create(userData);
@@ -577,10 +592,21 @@ export const updateUser = async (req, res, next) => {
             role: req.body.role,
             department: req.body.department,
             employeeId: req.body.employeeId,
+            adminArea: req.body.adminArea,
             isVerified: req.body.isVerified,
             isActive: req.body.isActive,
             address: req.body.address
         };
+
+        // Validate adminArea if provided
+        if (req.body.adminArea && Array.isArray(req.body.adminArea)) {
+            for (const pincode of req.body.adminArea) {
+                if (!/^[0-9]{6}$/.test(pincode)) {
+                    return next(new ApiError(400, 'Invalid admin area pincode format', 'INVALID_ADMIN_AREA_PINCODE', 'All admin area pincodes must be 6 digits'));
+                }
+            }
+            fieldsToUpdate.adminArea = req.body.adminArea.map(pin => pin.trim());
+        }
 
         // Remove undefined fields
         Object.keys(fieldsToUpdate).forEach(key => {
