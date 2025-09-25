@@ -1,32 +1,27 @@
-import axios from 'axios';
+import axios from "axios";
 
-// Create axios instance
 const api = axios.create({
-  baseURL: process.env.SERVER_URL || 'http://localhost:5050',
-  timeout: 10000, // Optional: timeout for requests
+  baseURL: "http://localhost:5050",
+  timeout: 10000,
 });
 
-// Attach token automatically
+// Automatically attach token from localStorage
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
+    const token = localStorage.getItem("token");
+    if (token) config.headers.Authorization = `Bearer ${token}`;
     return config;
   },
   (error) => Promise.reject(error)
 );
 
-// Optional: Global response interceptor for errors
+// Global 401 handler
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    // Example: handle 401 globally
     if (error.response?.status === 401) {
-      localStorage.removeItem('token'); // Clear token
-      // Optionally redirect user to login here if you want central handling
-      console.warn('Unauthorized request - token cleared');
+      localStorage.removeItem("token");
+      console.warn("Unauthorized request - token cleared");
     }
     return Promise.reject(error);
   }

@@ -7,19 +7,26 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { useUserStore } from "@/store/userStore"; // <-- import zustand store
+import { useUserStore } from "@/store/userStore";
 
 export default function LoginForm() {
   const router = useRouter();
-  const { login, loading, error } = useUserStore(); // <-- get login from store
+  const { login, loading, error, user, hasRole } = useUserStore();
   const [form, setForm] = useState({ email: "", password: "" });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const success = await login(form); // 🔹 call zustand login
+    const success = await login(form);
     if (success) {
-      router.push("/dashboard"); // redirect after login
+      // Redirect based on role
+      if (hasRole(["admin"])) {
+        router.push("/dashboard");
+      } else if (hasRole(["staff"])) {
+        router.push("/staff/dashboard");
+      } else {
+        router.push("/dashboard");
+      }
     }
   };
 
