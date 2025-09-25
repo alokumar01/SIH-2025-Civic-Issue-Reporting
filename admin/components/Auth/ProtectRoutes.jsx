@@ -1,51 +1,44 @@
 "use client";
 
-import { useUserStore } from "@/store/userStore";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useUserStore } from "@/store/userStore";
 
 export default function ProtectedRoute({ children, roles }) {
-  const fetchUser = useUserStore((state) => state.fetchUser);
-  const logout = useUserStore((state) => state.logout);
-  const hasRole = useUserStore((state) => state.hasRole);
-  const isAuthenticated = useUserStore((state) => state.isAuthenticated);
-  const loading = useUserStore((state) => state.loading);
+  const {
+    fetchUser,
+    logout,
+    hasRole,
+    isAuthenticated,
+    loading,
+    fetchedUser,
+  } = useUserStore();
 
   const router = useRouter();
   const [checking, setChecking] = useState(true);
   const [unauthorized, setUnauthorized] = useState(false);
 
   useEffect(() => {
-    let mounted = true;
+    const verify = async () => {
+      if (!fetchedUser) {
+        await fetchUser(); // fetch on first load
+      }
 
-    const verifyAuth = async () => {
-      try {
-        const user = await fetchUser();
-        if (!mounted) return;
-
-        if (!user) {
-          logout();
-          router.replace("/auth");
-          return;
-        }
-
-        if (roles && !hasRole(roles)) {
-          setUnauthorized(true);
-        }
-      } catch (err) {
-        console.error("Auth check failed:", err);
+      if (!isAuthenticated) {
         logout();
         router.replace("/auth");
-      } finally {
-        if (mounted) setChecking(false);
+        return;
       }
+
+      if (roles && !hasRole(roles)) {
+        setUnauthorized(true);
+      }
+
+      setChecking(false);
     };
 
-    verifyAuth();
-    return () => {
-      mounted = false;
-    };
-  }, [router, roles, fetchUser, logout, hasRole]);
+    verify();
+  }, [fetchedUser, isAuthenticated, roles, fetchUser, logout, hasRole, router]);
 
   // Show loader while checking
   if (checking || loading) {
@@ -63,8 +56,6 @@ export default function ProtectedRoute({ children, roles }) {
       </div>
     );
   }
-
-  if (!isAuthenticated) return null;
 
   return <>{children}</>;
 }
