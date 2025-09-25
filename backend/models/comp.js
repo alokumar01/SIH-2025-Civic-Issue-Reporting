@@ -79,17 +79,46 @@ const ComplaintSchema = new mongoose.Schema({
                 message: 'Coordinates must be [longitude, latitude] with valid ranges'
             }
         },
-        //TODO: Proper address schema
-        address: {
-            type: String,
-            trim: true,
-            maxlength: [200, "Address cannot exceed 200 characters"]
-        },
-        landmark: {
-            type: String,
-            trim: true,
-            maxlength: [100, "Landmark cannot exceed 100 characters"]
-        }
+    },
+    
+    state: {
+        type: String,
+        required: true,
+        trim: true,
+        maxlength: [100, "State cannot exceed 100 characters"]
+    },
+
+    district: {
+        type: String,
+        required: true,
+        trim: true,
+        maxlength: [100, "District cannot exceed 100 characters"]
+    },
+
+    locality: {
+        type: String,
+        required: true,
+        trim: true,
+        maxlength: [100, "Locality cannot exceed 100 characters"]
+    },
+
+    pinCode: {
+        type: String,
+        required: true,
+        trim: true,
+        match: [/^\d{6}$/, "Pin code must be a 6-digit number"]
+    },
+
+    address: {
+        type: String,
+        trim: true,
+        maxlength: [200, "Address cannot exceed 200 characters"]
+    },
+
+    landmark: {
+        type: String,
+        trim: true,
+        maxlength: [100, "Landmark cannot exceed 100 characters"]
     },
 
     // Type of complaint
