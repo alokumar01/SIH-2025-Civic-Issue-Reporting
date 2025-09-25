@@ -56,9 +56,19 @@ const userSchema = new mongoose.Schema({
         sparse: true, // Allow null values but enforce uniqueness when present
         unique: true,
         required: function () {
-            return this.role === 'staff' || this.role === 'department_head' || this.role === 'admin';
+            return this.role === 'staff' || this.role === 'department_head' || this.role === 'admin' || this.role === 'municipal_admin';
         }
     },
+
+    // For municipal_admin users - defines their administrative area
+    adminArea: [{
+        type: String,
+        match: [/^[0-9]{6}$/, 'Please enter a valid 6-digit pincode'],
+        trim: true,
+        required: function () {
+            return this.role === 'municipal_admin';
+        }
+    }],
 
     // Address Information
     address: {
