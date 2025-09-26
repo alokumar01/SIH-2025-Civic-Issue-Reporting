@@ -141,15 +141,6 @@ const ComplaintSchema = new mongoose.Schema({
     // Type of complaint
     category: {
         type: String,
-        enum: [
-            "Road",
-            "Sanitation",
-            "Streetlight",
-            "Water Supply",
-            "Medical",
-            "Food Safety",
-            "Other",
-        ],
         required: true,
     },
 
@@ -168,7 +159,6 @@ const ComplaintSchema = new mongoose.Schema({
     // Priority of the COmplaint
     priority: {
         type: String,
-        enum: ["Low", "Medium", "High", "Critical"],
         default: "Medium",
     },
 
