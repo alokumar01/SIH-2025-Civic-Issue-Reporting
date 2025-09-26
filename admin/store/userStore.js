@@ -1,97 +1,109 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 import api from "@/lib/api";
 import { toast } from "sonner";
 
-export const useUserStore = create((set, get) => ({
-  user: null,
-  token: null,
-  loading: false,
-  error: null,
-  isAuthenticated: false,
-  fetchedUser: false, // ✅ track if fetchUser already ran
-
-  // --- LOGIN ---
-  login: async (credentials) => {
-    const { email, password } = credentials;
-    if (!email || !password) {
-      toast.error("Email and password are required");
-      set({ error: "Email and password are required" });
-      return false;
-    }
-
-    try {
-      set({ loading: true, error: null });
-      const response = await api.post("/v1/auth/login", credentials);
-      const { token, data } = response.data;
-
-      // Save token to localStorage
-      localStorage.setItem("token", token);
-
-      // Update Zustand store
-      set({
-        user: data,
-        token,
-        isAuthenticated: true,
-        fetchedUser: true,
-      });
-
-      toast.success("Login successful!");
-      return true;
-    } catch (error) {
-      const msg = error?.response?.data?.message || "Login failed";
-      set({ error: msg, isAuthenticated: false });
-      toast.error(msg);
-      return false;
-    } finally {
-      set({ loading: false });
-    }
-  },
-
-  // --- LOGOUT ---
-  logout: () => {
-    localStorage.removeItem("token");
-    set({
+export const useUserStore = create(
+  persist(
+    (set, get) => ({
       user: null,
       token: null,
+      loading: false,
       isAuthenticated: false,
-      error: null,
       fetchedUser: false,
-    });
-    toast.success("Logout successful!");
-  },
+      error: null,
 
-  // --- FETCH USER ---
-  fetchUser: async () => {
-    // Prevent multiple calls
-    if (get().fetchedUser) return get().user;
+      // --- LOGIN ---
+      login: async ({ email, password }) => {
+        if (!email || !password) {
+          toast.error("Email and password are required");
+          return false;
+        }
+        try {
+          set({ loading: true, error: null });
+          const res = await api.post("/v1/auth/login", { email, password });
+          const { token, data } = res.data;
 
-    try {
-      set({ loading: true, error: null });
-      const token = localStorage.getItem("token");
-      if (!token) {
-        set({ user: null, isAuthenticated: false, fetchedUser: true });
-        return null;
-      }
+          localStorage.setItem("token", token);
+          set({
+            token,
+            user: data,
+            isAuthenticated: true,
+            fetchedUser: true,
+          });
 
-      const response = await api.get("/v1/auth/me"); // token via interceptor
-      const user = response.data.data;
+          toast.success("Login successful!");
+          return true;
+        } catch (err) {
+          const msg = err?.response?.data?.message || "Login failed";
+          toast.error(msg);
+          set({ isAuthenticated: false, error: msg });
+          return false;
+        } finally {
+          set({ loading: false });
+        }
+      },
 
-      set({ user, token, isAuthenticated: true, fetchedUser: true });
-      return user;
-    } catch (error) {
-      console.error("Fetch user failed:", error);
-      localStorage.removeItem("token");
-      set({ user: null, token: null, isAuthenticated: false, fetchedUser: true });
-      return null;
-    } finally {
-      set({ loading: false });
+      // --- LOGOUT ---
+      logout: () => {
+        localStorage.removeItem("token");
+        set({
+          user: null,
+          token: null,
+          isAuthenticated: false,
+          fetchedUser: false,
+        });
+        toast.success("Logged out successfully");
+      },
+
+      // --- FETCH USER ---
+      fetchUser: async () => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          set({ isAuthenticated: false, fetchedUser: true, user: null });
+          return null;
+        }
+        try {
+          set({ loading: true });
+          const res = await api.get("/v1/auth/me"); // token via interceptor
+          const user = res.data.data;
+
+          set({
+            user,
+            token,
+            isAuthenticated: true,
+            fetchedUser: true,
+          });
+
+          return user;
+        } catch (err) {
+          console.error("Fetch user failed:", err);
+          localStorage.removeItem("token");
+          set({
+            user: null,
+            token: null,
+            isAuthenticated: false,
+            fetchedUser: true,
+          });
+          return null;
+        } finally {
+          set({ loading: false });
+        }
+      },
+
+      // --- ROLE CHECK ---
+      hasRole: (roles) => {
+        const u = get().user;
+        return u ? roles.includes(u.role) : false;
+      },
+    }),
+    {
+      name: "civic-user", // key in localStorage
+      partialize: (state) => ({
+        token: state.token,
+        user: state.user,
+        isAuthenticated: state.isAuthenticated,
+      }),
     }
-  },
-
-  // --- ROLE CHECK ---
-  hasRole: (roles) => {
-    const user = get().user;
-    if (!user) return false;
-    return roles.includes(user.role);
-  },
-}));
+  )
+);

@@ -1,6 +1,8 @@
 "use client";
+
 import ProtectedRoute from "@/components/Auth/ProtectRoutes";
 import { useUserStore } from "@/store/userStore";
+import AdminDashboard from "@/components/Dashboard/Admin";
 
 export default function AdminPage() {
   const { user } = useUserStore();
@@ -8,10 +10,7 @@ export default function AdminPage() {
   return (
     <ProtectedRoute roles={["admin"]}>
       <div className="p-6">
-        <h1 className="text-2xl font-bold">Admin Panel</h1>
-        <p>
-          ✅ Welcome <span className="font-semibold">{user?.firstName}</span>, you have access to district heads.
-        </p>
+        <AdminDashboard />
       </div>
     </ProtectedRoute>
   );
