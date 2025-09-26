@@ -3,28 +3,14 @@
 import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Bell, User, Menu, X } from "lucide-react";
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "@/components/ui/popover";
-import { useUserStore } from "@/store/userStore";
+import { Menu, X } from "lucide-react";
 
-export default function DashboardHeader() {
+export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const router = useRouter();
-  const { logout, user } = useUserStore();
-
-  const handleProfile = () => router.push("/profile");
-  const handleSettings = () => router.push("/settings");
-  const handleLogout = () => {
-    logout();
-    router.push("/auth");
-  };
 
   return (
-    <header className="bg-white shadow-md px-4 py-3 flex items-center justify-between relative">
+    <header className="bg-white shadow-sm px-4 py-3 flex items-center justify-between sticky top-0 z-40">
       {/* Logo */}
       <div className="flex items-center space-x-3">
         <Image
@@ -33,48 +19,27 @@ export default function DashboardHeader() {
           width={40}
           height={40}
         />
-        {/* <span className="font-semibold text-lg text-gray-800">District Name</span> */}
+        <span className="font-semibold text-lg text-gray-800">Sahyog</span>
       </div>
 
       {/* Desktop Menu */}
-      <div className="hidden md:flex items-center space-x-4">
-        <button className="relative p-2 rounded-full hover:bg-gray-100 transition">
-          <Bell className="w-5 h-5 text-gray-600" />
-          <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+      <nav className="hidden md:flex items-center space-x-8">
+        <a href="#features" className="text-gray-700 hover:text-green-600 transition-colors">
+          Features
+        </a>
+        <a href="#about" className="text-gray-700 hover:text-green-600 transition-colors">
+          About
+        </a>
+        <a href="#contact" className="text-gray-700 hover:text-green-600 transition-colors">
+          Contact
+        </a>
+        <button
+          onClick={() => router.push("/auth")}
+          className="bg-green-600 text-white px-6 py-2 rounded-full font-medium hover:bg-green-700 transition-colors"
+        >
+          Admin Login
         </button>
-
-        {/* Popover for user menu */}
-        <Popover>
-          <PopoverTrigger asChild>
-            <button className="flex items-center space-x-2 rounded-full hover:bg-gray-100 p-1 transition">
-              <User className="w-6 h-6 text-gray-700" />
-              <span className="hidden md:inline text-gray-800 font-medium">
-                {user?.firstName || "Admin"}
-              </span>
-            </button>
-          </PopoverTrigger>
-          <PopoverContent className="w-40 bg-white shadow-md rounded-md p-2">
-            <button
-              className="w-full text-left px-2 py-1 hover:bg-gray-100 rounded"
-              onClick={handleProfile}
-            >
-              Profile
-            </button>
-            <button
-              className="w-full text-left px-2 py-1 hover:bg-gray-100 rounded"
-              onClick={handleSettings}
-            >
-              Settings
-            </button>
-            <button
-              className="w-full text-left px-2 py-1 hover:bg-gray-100 rounded"
-              onClick={handleLogout}
-            >
-              Logout
-            </button>
-          </PopoverContent>
-        </Popover>
-      </div>
+      </nav>
 
       {/* Mobile Hamburger */}
       <div className="md:hidden">
@@ -86,43 +51,39 @@ export default function DashboardHeader() {
         </button>
       </div>
 
-      {/* Mobile Overlay */}
+      {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="absolute top-16 left-0 w-full bg-white shadow-md flex flex-col items-start p-4 space-y-3 md:hidden z-50">
-          <button className="flex items-center space-x-2 w-full p-2 hover:bg-gray-100 rounded">
-            <Bell className="w-5 h-5 text-gray-600" />
-            <span className="text-gray-800">Notifications</span>
+        <div className="fixed top-16 left-0 w-full bg-white shadow-lg flex flex-col items-start p-4 space-y-4 md:hidden z-50 border-t">
+          <a 
+            href="#features" 
+            className="text-gray-700 hover:text-green-600 transition-colors py-2 w-full"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            Features
+          </a>
+          <a 
+            href="#about" 
+            className="text-gray-700 hover:text-green-600 transition-colors py-2 w-full"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            About
+          </a>
+          <a 
+            href="#contact" 
+            className="text-gray-700 hover:text-green-600 transition-colors py-2 w-full"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            Contact
+          </a>
+          <button
+            onClick={() => {
+              router.push("/auth");
+              setMobileMenuOpen(false);
+            }}
+            className="bg-green-600 text-white px-6 py-2 rounded-full font-medium hover:bg-green-700 transition-colors w-full text-center"
+          >
+            Admin Login
           </button>
-
-          {/* Mobile Popover */}
-          <Popover>
-            <PopoverTrigger asChild>
-              <button className="flex items-center space-x-2 w-full p-2 hover:bg-gray-100 rounded">
-                <User className="w-5 h-5 text-gray-600" />
-                <span className="text-gray-800">{user?.firstName || "Admin"}</span>
-              </button>
-            </PopoverTrigger>
-            <PopoverContent className="w-full bg-white shadow-md rounded-md p-2">
-              <button
-                className="w-full text-left px-2 py-1 hover:bg-gray-100 rounded"
-                onClick={handleProfile}
-              >
-                Profile
-              </button>
-              <button
-                className="w-full text-left px-2 py-1 hover:bg-gray-100 rounded"
-                onClick={handleSettings}
-              >
-                Settings
-              </button>
-              <button
-                className="w-full text-left px-2 py-1 hover:bg-gray-100 rounded"
-                onClick={handleLogout}
-              >
-                Logout
-              </button>
-            </PopoverContent>
-          </Popover>
         </div>
       )}
     </header>
