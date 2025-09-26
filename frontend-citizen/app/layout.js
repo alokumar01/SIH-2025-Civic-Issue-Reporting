@@ -16,6 +16,17 @@ const geistMono = Geist_Mono({
 export const metadata = {
   title: "Civic Issue Portal - Report & Track Community Issues",
   description: "A platform for citizens to report civic issues and track their resolution status. Help improve your community by reporting problems and monitoring progress.",
+  appleWebApp: {
+    title: "Sahyogi",
+  },
+  manifest: "/manifest.json",
+  icons: {
+    apple: "/app/apple-icon.png",
+    icon: [
+      { url: "/public/web-app-manifest-192x192.png", sizes: "192x192", type: "image/png" },
+      { url: "/public/web-app-manifest-512x512.png", sizes: "512x512", type: "image/png" },
+    ],
+  },
 };
 
 

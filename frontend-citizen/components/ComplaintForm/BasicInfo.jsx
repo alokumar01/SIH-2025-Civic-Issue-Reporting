@@ -107,7 +107,7 @@ export default function BasicInfo({ data, onChange, className }) {
                 </div>
 
                 {/* Department */}
-                <div className="space-y-2">
+                {/* <div className="space-y-2">
                     <Label htmlFor="department">Department</Label>
                     <Input
                         id="department"
@@ -116,7 +116,7 @@ export default function BasicInfo({ data, onChange, className }) {
                         onChange={handleInputChange}
                         placeholder="Relevant department (if known)"
                     />
-                </div>
+                </div> */}
 
                 {/* Tags */}
                 <div className="space-y-2">

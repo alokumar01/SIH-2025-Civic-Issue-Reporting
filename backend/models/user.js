@@ -65,10 +65,15 @@ const userSchema = new mongoose.Schema({
         type: String,
         match: [/^[0-9]{6}$/, 'Please enter a valid 6-digit pincode'],
         trim: true,
-        required: function () {
-            return this.role === 'municipal_admin';
-        }
     }],
+
+    serviceArea: [{
+        type: String,
+        match: [/^[0-9]{6}$/, 'Please enter a valid 6-digit pincode'],
+        trim: true,
+    }],
+
+
 
     // Address Information
     address: {
@@ -98,7 +103,7 @@ const userSchema = new mongoose.Schema({
     // Profile Information
     avatar: {
         type: String, // Cloudinary URL
-        default: 'https://res.cloudinary.com/civic-reporting/image/upload/v1/defaults/avatar_default.jpg'
+        default: 'https://res.cloudinary.com/dsax7zaig/image/upload/v1758824024/defaultprofile_unxzhr.avif'
     },
     isVerified: {
         type: Boolean,
