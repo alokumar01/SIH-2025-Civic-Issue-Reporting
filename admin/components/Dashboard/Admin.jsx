@@ -14,7 +14,9 @@ import {
     Edit2,
     Trash2,
     MoreVertical,
+    Users,
 } from "lucide-react";
+import EmployeeManagement from "./EmployeeManagement";
 
 /* Shadcn UI components you should have in your project (paths may vary) */
 import { Input } from "@/components/ui/input";
@@ -314,6 +316,18 @@ export default function AdminDashboard() {
                         >
                             Analytics
                         </button>
+                        <button
+                            onClick={() => setActiveTab("employees")}
+                            className={`w-full text-left px-3 py-2 rounded ${activeTab === "employees"
+                                ? "bg-green-50 font-semibold"
+                                : "hover:bg-green-50"
+                                }`}
+                        >
+                            <div className="flex items-center">
+                                <Users className="w-4 h-4 mr-2" />
+                                Employee Management
+                            </div>
+                        </button>
                     </nav>
 
                     <div className="p-4 border-t">
@@ -377,6 +391,18 @@ export default function AdminDashboard() {
                                     className="text-left px-3 py-2 rounded hover:bg-green-50"
                                 >
                                     Analytics
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        setActiveTab("employees");
+                                        setSidebarOpen(false);
+                                    }}
+                                    className="text-left px-3 py-2 rounded hover:bg-green-50"
+                                >
+                                    <div className="flex items-center">
+                                        <Users className="w-4 h-4 mr-2" />
+                                        Employee Management
+                                    </div>
                                 </button>
                             </nav>
                         </div>
@@ -738,6 +764,9 @@ export default function AdminDashboard() {
                             </div>
                         </section>
                     )}
+
+                    {/* Employee Management */}
+                    {activeTab === "employees" && <EmployeeManagement />}
                 </main>
             </div>
 

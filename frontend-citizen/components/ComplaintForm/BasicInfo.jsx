@@ -107,6 +107,18 @@ export default function BasicInfo({ data, onChange, className }) {
                 </div>
                 </div>
 
+                {/* Department */}
+                {/* <div className="space-y-2">
+                    <Label htmlFor="department">Department</Label>
+                    <Input
+                        id="department"
+                        name="department"
+                        value={data.department}
+                        onChange={handleInputChange}
+                        placeholder="Relevant department (if known)"
+                    />
+                </div> */}
+
                 {/* Tags */}
                 <div className="space-y-2">
                     <Label htmlFor="tags">Tags</Label>

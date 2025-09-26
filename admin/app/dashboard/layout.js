@@ -9,6 +9,7 @@ import React from 'react';
 
 export default function DashboardLayout({ children }) {
     const { user } = useUserStore();
+    console.log(user?.role)
     if (!user) {
         return <UserNotFound />;
     }

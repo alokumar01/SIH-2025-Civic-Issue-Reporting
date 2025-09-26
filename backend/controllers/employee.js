@@ -29,12 +29,27 @@ const createEmployee = async (req, res, next) => {
             department,
             employeeId,
             address,
-            notificationPreferences
+            notificationPreferences,
+            serviceArea
         } = req.body;
 
         // Validate required fields
         if (!firstName || !lastName || !email || !phone || !password || !role || !employeeId) {
             return next(new ApiError(400, 'Please provide all required fields', 'MISSING_FIELDS', 'First name, last name, email, phone, password, role, and employee ID are required'));
+        }
+
+        // Validate serviceArea if provided for staff role
+        if (role === 'staff' && serviceArea) {
+            if (!Array.isArray(serviceArea)) {
+                return next(new ApiError(400, 'Invalid service area format', 'INVALID_SERVICE_AREA', 'Service area must be an array of pincodes'));
+            }
+            
+            // Validate each pincode format
+            const validPincodeFormat = /^[0-9]{6}$/;
+            const invalidPincodes = serviceArea.filter(pincode => !validPincodeFormat.test(pincode));
+            if (invalidPincodes.length > 0) {
+                return next(new ApiError(400, 'Invalid pincode format in service area', 'INVALID_PINCODES', `Invalid pincodes: ${invalidPincodes.join(', ')}`));
+            }
         }
 
         // Validate employee role
@@ -120,7 +135,8 @@ const createEmployee = async (req, res, next) => {
             emailVerificationToken: generateEmailVerificationToken(),
             emailVerificationExpire: Date.now() + 24 * 60 * 60 * 1000, // 24 hours
             isVerified: false,
-            isActive: true
+            isActive: true,
+            serviceArea: role === 'staff' ? (serviceArea || []) : []
         };
 
         // Add department if provided
@@ -329,7 +345,7 @@ const updateEmployee = async (req, res, next) => {
 
         // Only allow certain fields to be updated
         const allowedFields = [
-            'firstName', 'lastName', 'email', 'phone', 'address', 'notificationPreferences', 'isActive', 'isVerified'
+            'firstName', 'lastName', 'email', 'phone', 'address', 'notificationPreferences', 'isActive', 'isVerified', 'serviceArea'
         ];
         Object.keys(updateFields).forEach(key => {
             if (!allowedFields.includes(key)) delete updateFields[key];
