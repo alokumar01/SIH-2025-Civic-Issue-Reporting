@@ -40,7 +40,7 @@ export default function BasicInfo({ data, onChange, className }) {
     };
 
     return (
-        <Card className={`p-6 ${className}`}>
+        <Card className={`p-3 ${className}`}>
             <div className="space-y-4">
                 {/* Title */}
                 <div className="space-y-2">
@@ -55,6 +55,20 @@ export default function BasicInfo({ data, onChange, className }) {
                     />
                 </div>
 
+                {/* Description */}
+                <div className="space-y-2">
+                    <Label htmlFor="description">Detailed Description</Label>
+                    <Textarea
+                        id="description"
+                        name="description"
+                        value={data.description}
+                        onChange={handleInputChange}
+                        placeholder="Please provide a detailed description of the issue..."
+                        rows={4}
+                    />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Category */}
                 <div className="space-y-2">
                     <Label htmlFor="category">Category *</Label>
@@ -74,20 +88,6 @@ export default function BasicInfo({ data, onChange, className }) {
                         ))}
                     </select>
                 </div>
-
-                {/* Description */}
-                <div className="space-y-2">
-                    <Label htmlFor="description">Detailed Description</Label>
-                    <Textarea
-                        id="description"
-                        name="description"
-                        value={data.description}
-                        onChange={handleInputChange}
-                        placeholder="Please provide a detailed description of the issue..."
-                        rows={4}
-                    />
-                </div>
-
                 {/* Priority */}
                 <div className="space-y-2">
                     <Label htmlFor="priority">Priority Level</Label>
@@ -97,13 +97,14 @@ export default function BasicInfo({ data, onChange, className }) {
                         value={data.priority}
                         onChange={handleInputChange}
                         className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background"
-                    >
+                        >
                         {PRIORITIES.map(priority => (
                             <option key={priority.value} value={priority.value}>
                                 {priority.label}
                             </option>
                         ))}
                     </select>
+                </div>
                 </div>
 
                 {/* Department */}

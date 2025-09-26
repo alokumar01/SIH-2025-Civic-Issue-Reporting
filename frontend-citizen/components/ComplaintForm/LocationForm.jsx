@@ -20,35 +20,30 @@ export default function LocationForm({ location, onChange, className }) {
         });
     };
 
-    const detectLocation = async () => {
-        setIsLoadingLocation(true);
-        setError('');
-        
-        try {
-            const position = await getCurrentLocation();
-            const { longitude, latitude } = position;
-            
-            // Update coordinates
-            onChange({
-                ...location,
-                coordinates: [longitude, latitude]
-            });
+const detectLocation = async () => {
+    setIsLoadingLocation(true);
+    setError('');
+    
+    try {
+        const position = await getCurrentLocation();
+        const { longitude, latitude } = position;
 
-            // Get address details using reverse geocoding
-            const addressDetails = await reverseGeocode(longitude, latitude);
-            
-            // Update location details
-            onChange({
-                ...location,
-                ...addressDetails
-            });
-        } catch (error) {
-            console.error('Error detecting location:', error);
-            setError('Failed to detect location. Please try again or enter manually.');
-        } finally {
-            setIsLoadingLocation(false);
-        }
-    };
+        // Get address details using reverse geocoding
+        const addressDetails = await reverseGeocode(longitude, latitude);
+
+        // Always keep coordinates + address
+        onChange({
+            ...location,
+            coordinates: [longitude, latitude],
+            ...addressDetails
+        });
+    } catch (error) {
+        console.error('Error detecting location:', error);
+        setError('Failed to detect location. Please try again or enter manually.');
+    } finally {
+        setIsLoadingLocation(false);
+    }
+};
 
     return (
         <Card className={`p-6 ${className}`}>
